@@ -6,7 +6,12 @@ require('dotenv').config(); const bcrypt = require('bcrypt');
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://event-sphere-6vrsuh7hl-noorjahan-akters-projects.vercel.app",
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 
