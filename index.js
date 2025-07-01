@@ -1,16 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const { ObjectId } = require('mongodb');
 require('dotenv').config(); const bcrypt = require('bcrypt');
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
-
-
-
 app.use(cors());
 app.use(express.json());
-
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.rq93w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -34,21 +31,7 @@ async function run() {
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    } finally {
+} finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
     }
@@ -118,6 +101,64 @@ app.post('/addEvent', async (req, res) => {
     const result = await eventCollection.insertOne(event);
     res.status(201).send(result);
 });
+app.get('/event/:email', async (req, res) => {
+  const email = req.params.email;
+  const events = await eventCollection.find({ postedBy: email }).toArray();
+  res.send(events);
+});
+
+// DELETE event by ID
+
+
+app.delete('/event/:id', async (req, res) => {
+  const id = req.params.id;
+  const result = await eventCollection.deleteOne({ _id: new ObjectId(id) });
+  res.send(result);
+});
+
+// UPDATE event by ID
+app.put('/event/:id', async (req, res) => {
+  const id = req.params.id;
+  const updatedEvent = req.body;
+
+  const result = await eventCollection.updateOne(
+    { _id: new ObjectId(id) },
+    {
+      $set: {
+        eventTitle: updatedEvent.eventTitle,
+        dateTime: updatedEvent.dateTime,
+        location: updatedEvent.location,
+        description: updatedEvent.description,
+      }
+    }
+  );
+
+  res.send(result);
+});
+
+app.post('/joinEvent/:id', async (req, res) => {
+  const eventId = req.params.id;
+  const { userEmail } = req.body;
+
+  const event = await eventCollection.findOne({ _id: new ObjectId(eventId) });
+
+  // If already joined, reject
+  if (event.joinedUsers?.includes(userEmail)) {
+    return res.status(400).json({ message: "You already joined this event." });
+  }
+
+  // Update attendeeCount and joinedUsers
+  const result = await eventCollection.updateOne(
+    { _id: new ObjectId(eventId) },
+    {
+      $inc: { attendeeCount: 1 },
+      $addToSet: { joinedUsers: userEmail } 
+    }
+  );
+
+  res.json({ message: "Joined event successfully", result });
+});
+
 
 
 
