@@ -8,6 +8,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const allowedOrigins = [
   "https://event-sphere-6vrsuh7hl-noorjahan-akters-projects.vercel.app",
+  "https://event-sphere-77mpyx2oy-noorjahan-akters-projects.vercel.app/",
   "http://localhost:5173"
 ];
 
