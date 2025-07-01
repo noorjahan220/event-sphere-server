@@ -6,9 +6,21 @@ require('dotenv').config(); const bcrypt = require('bcrypt');
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
+const allowedOrigins = [
+  "https://event-sphere-6vrsuh7hl-noorjahan-akters-projects.vercel.app",
+  "http://localhost:5173"
+];
+
 app.use(
   cors({
-    origin: "https://event-sphere-6vrsuh7hl-noorjahan-akters-projects.vercel.app",
+    origin: function(origin, callback) {
+      // Allow requests with no origin (like Postman or curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        return callback(new Error("Not allowed by CORS"), false);
+      }
+      return callback(null, true);
+    },
     credentials: true,
   })
 );
