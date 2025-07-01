@@ -28,9 +28,26 @@ async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
+
+
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     } finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
@@ -39,8 +56,9 @@ async function run() {
 run().catch(console.dir);
 
 // Collections
-const eventCollection = client.db('eventSphere').collection('events');
+const eventCollection = client.db('eventSphere').collection('allEvents');
 const userCollection = client.db('eventSphere').collection('users');
+
 
 // post api for registering a user
 app.post('/register', async (req, res) => {
@@ -74,6 +92,33 @@ app.get('/users', async (req, res) => {
     const usersWithoutPasswords = users.map(({ password, ...rest }) => rest);
     res.json(usersWithoutPasswords);
 });
+// for login 
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    // find user by email
+    const user = await userCollection.findOne({ email })
+    if (!user) {
+        return res.status(400).json({ message: 'User not found' });
+    }
+    const { password: pwd, ...userWithoutPassword } = user;
+    res.json({ message: "Login successful", user: userWithoutPassword });
+});
+
+// event related apis
+
+app.get('/allEvent', async (req, res) => {
+    const cursor = eventCollection.find();
+    const result = await cursor.toArray();
+    console.log("Fetched events:", result.length);
+    res.send(result);
+});
+app.post('/addEvent', async (req, res) => {
+    const event = req.body;
+    const result = await eventCollection.insertOne(event);
+    res.status(201).send(result);
+});
+
 
 
 
