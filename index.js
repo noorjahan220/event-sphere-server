@@ -12,6 +12,7 @@ app.use(
     origin: [
       "https://event-sphere-6vrsuh7hl-noorjahan-akters-projects.vercel.app",
       "https://event-sphere-77mpyx2oy-noorjahan-akters-projects.vercel.app",
+      "https://event-sphere-olg0oitwl-noorjahan-akters-projects.vercel.app",
       "http://localhost:5173"
     ],
     credentials: true,
@@ -49,7 +50,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        // await client.connect();
+        await client.connect();
 
 
 
