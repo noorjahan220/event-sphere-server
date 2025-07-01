@@ -17,6 +17,11 @@ app.use(
     credentials: true,
   })
 );
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+};
 // app.use(cors({
 //   origin: function(origin, callback) {
 //     if (!origin) return callback(null, true); // allow Postman or server-to-server
