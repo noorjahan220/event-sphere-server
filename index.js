@@ -7,26 +7,21 @@ const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const allowedOrigins = [
-
+  "https://event-sphere-6vrsuh7hl-noorjahan-akters-projects.vercel.app",
   "https://event-sphere-77mpyx2oy-noorjahan-akters-projects.vercel.app",
   "http://localhost:5173"
 ];
 
-app.use(
-  cors({
-    origin: function(origin, callback) {
-      // Allow requests with no origin (like Postman or curl)
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.indexOf(origin) === -1) {
-        return callback(new Error("Not allowed by CORS"), false);
-      }
-      // Allow the origin dynamically
-      return callback(null, origin);
-    },
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true); // allow Postman or server-to-server
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error("Not allowed by CORS"), false);
+    }
+    return callback(null, origin); // reflect the origin dynamically
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 
