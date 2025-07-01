@@ -95,14 +95,23 @@ app.get('/users', async (req, res) => {
 // for login 
 
 app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-    // find user by email
-    const user = await userCollection.findOne({ email })
-    if (!user) {
-        return res.status(400).json({ message: 'User not found' });
-    }
-    const { password: pwd, ...userWithoutPassword } = user;
-    res.json({ message: "Login successful", user: userWithoutPassword });
+  const { email, password } = req.body;
+
+  const user = await userCollection.findOne({ email });
+  if (!user) {
+    return res.status(400).json({ message: 'User not found' });
+  }
+
+  // Check password
+  const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  if (!isPasswordCorrect) {
+    return res.status(400).json({ message: 'Incorrect password' });
+  }
+
+  // Exclude password from response
+  const { password: pwd, ...userWithoutPassword } = user;
+
+  res.json({ message: "Login successful", user: userWithoutPassword });
 });
 
 // event related apis
