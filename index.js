@@ -14,6 +14,8 @@ app.use(
       "https://event-sphere-77mpyx2oy-noorjahan-akters-projects.vercel.app",
       "https://event-sphere-olg0oitwl-noorjahan-akters-projects.vercel.app",
       "https://event-sphere-kn4r2pa4x-noorjahan-akters-projects.vercel.app",
+      "https://event-sphere-kn4r2pa4x-noorjahan-akters-projects.vercel.app",
+      "https://event-sphere-nv32exsl0-noorjahan-akters-projects.vercel.app/",
       "http://localhost:5173"
     ],
     credentials: true,
